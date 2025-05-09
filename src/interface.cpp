@@ -1,29 +1,17 @@
-#include <iostream>
 #include "pipelines/pipeline.h"
+#include <GRID/interface.h>
+#include <GRID/ui.h>
+#include "ui/sidebar.h"
+#include "ui/viewport.h"
 
-extern "C" int getVersionMajor() __attribute__((visibility("default")));
-extern "C" int getVersionMinor() __attribute__((visibility("default")));
-extern "C" void setWidgets() __attribute__((visibility("default")));
-extern "C" void init() __attribute__((visibility("default")));
-extern "C" void run() __attribute__((visibility("default")));
-extern "C" void destroy() __attribute__((visibility("default")));
-
-// add get version function
-extern "C" int getVersionMajor() {
-	return 0;
-}
-
-extern "C" int getVersionMinor() {
-	return 1;
-}
-
-// add widgets function
 extern "C" void setWidgets() {
+	ui.addWidget(new Viewport());
+    ui.addWidget(new Sidebar());
 }
 
 // add args to init
-extern "C" void init() {
-	pipeline.init();
+extern "C" void init(int argc, char* argv[]) {
+	pipeline.init(argc, argv);
 }
 
 extern "C" void run() {

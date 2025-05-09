@@ -1,9 +1,6 @@
 #include <pipelines/pipeline.h>
 #include <GRID/renderer.h>
 #include <GRID/window.h>
-#include <GRID/ui.h>
-#include "ui/viewport.h"
-#include "ui/sidebar.h"
 #include <gpu/gpu.h>
 
 Pipeline pipeline = Pipeline();
@@ -17,7 +14,7 @@ Pipeline::~Pipeline() {
 const int GPURESX = 160;
 const int GPURESY = 160;
 
-void Pipeline::init() {
+void Pipeline::init(int argc, char* argv[]) {
     renderer.setResolution(GPURESX, GPURESY);
     textureManager.createTexture("gpuOutput", GPURESX, GPURESY, TEXTURE_FORMAT::RGBA8UI, 0);
 
@@ -30,9 +27,6 @@ void Pipeline::init() {
 
     gpu = new GPU();
     gpu->init(GPURESX, GPURESY);
-
-    ui.addWidget(new Viewport());
-    ui.addWidget(new Sidebar());
 }
 
 void Pipeline::run() {
