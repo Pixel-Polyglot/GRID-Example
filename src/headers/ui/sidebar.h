@@ -1,7 +1,7 @@
 #pragma once
-#include <GRID/widget.h>
+#include <GRID/GRID_widget.h>
 
-class Sidebar : public Widget {
+class Sidebar : public GRID_Widget {
 public:
     Sidebar();
     ~Sidebar();

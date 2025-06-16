@@ -1,9 +1,11 @@
 #pragma once
-#include <glm/glm.hpp>
+
+#include <GRID/GRID_math.h>
+#include <vector>
 
 struct vertex {
-    glm::vec2 position;
-    glm::vec3 color;
+    GRID_Vec2f position;
+    GRID_Vec3f color;
 };
 
 struct triangle {
@@ -21,7 +23,7 @@ public:
     unsigned char* run();
 
 private:
-    int edgecross(glm::vec2 p, glm::vec2 a, glm::vec2 b);
+    int edgecross(GRID_Vec2f p, GRID_Vec2f a, GRID_Vec2f b);
 
     int image_width;
     int image_height;

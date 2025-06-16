@@ -1,15 +1,14 @@
 #include "pipelines/pipeline.h"
-#include <GRID/interface.h>
-#include <GRID/ui.h>
+#include <GRID/GRID.h>
+#include <GRID/GRID_ui.h>
 #include "ui/sidebar.h"
 #include "ui/viewport.h"
 
 extern "C" void setWidgets() {
-	ui.addWidget(new Viewport());
-    ui.addWidget(new Sidebar());
+	GRID_UI::addWidget(new Viewport());
+    GRID_UI::addWidget(new Sidebar());
 }
 
-// add args to init
 extern "C" void init(int argc, char* argv[]) {
 	pipeline.init(argc, argv);
 }

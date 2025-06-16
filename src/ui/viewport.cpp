@@ -1,5 +1,7 @@
 #include "ui/viewport.h"
-#include <GRID/renderer.h>
+#include <GRID/GRID_renderer.h>
+#include <GRID/GRID_ui.h>
+#include <GRID/GRID_input.h>
 
 Viewport::Viewport() {
 }
@@ -8,40 +10,34 @@ Viewport::~Viewport() {
 }
 
 void Viewport::render() {
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+    GRID_UI::begin("Viewport");
 
-    ImGui::Begin("Viewport", nullptr);
-
-    ImGuiIO& io = ImGui::GetIO();
-    if (ImGui::IsWindowHovered()) {
-        if (io.MouseDown[0]) {
-            ImVec2 mousePos = ImGui::GetMousePos();
-            renderer.getCamera()->translate(mousePos.x - previousMousePos.x, mousePos.y - previousMousePos.y);
+    if (GRID_UI::isWindowHovered()) {
+        if (GRID_Input::isMouseButtonDown(GRID_Input::MOUSE_BUTTON_LEFT)) {
+            GRID_Vec2f mousePos = GRID_Input::getMousePos();
+            GRID_Renderer::getCamera()->translate(mousePos.x - previousMousePos.x, mousePos.y - previousMousePos.y);
         }
-        if (io.MouseWheel != 0.0f) {
+        if (GRID_Input::getMouseWheel() != 0.0f) {
 			float scaleX, scaleY;
-            renderer.getCamera()->getScale(scaleX, scaleY);
-            float scrollAmount = io.MouseWheel * (scaleX * 0.1f);
-            renderer.getCamera()->setScale(scaleX + scrollAmount, scaleY + scrollAmount);
+            GRID_Renderer::getCamera()->getScale(scaleX, scaleY);
+            float scrollAmount = GRID_Input::getMouseWheel() * (scaleX * 0.1f);
+            GRID_Renderer::getCamera()->setScale(scaleX + scrollAmount, scaleY + scrollAmount);
         }
     }
-	previousMousePos = ImGui::GetMousePos();
+	previousMousePos = GRID_Input::getMousePos();
 
-	ImVec2 newViewportPanelSize = ImGui::GetContentRegionAvail();
+	GRID_Vec2f newViewportPanelSize = GRID_UI::getContentRegionAvail();
     if (newViewportPanelSize.x != viewportPanelSize.x || newViewportPanelSize.y != viewportPanelSize.y) {
-        renderer.resize(int(viewportPanelSize.x), int(viewportPanelSize.y), int(newViewportPanelSize.x), int(newViewportPanelSize.y));
+        GRID_Renderer::resize(int(viewportPanelSize.x), int(viewportPanelSize.y), int(newViewportPanelSize.x), int(newViewportPanelSize.y));
     }
     viewportPanelSize = newViewportPanelSize;
-    renderer.render();
-	ImGui::Image(
-		(void*)renderer.getImguiTexture(),  
-		ImVec2(viewportPanelSize.x, viewportPanelSize.y), 
-		ImVec2(0, 1), 
-		ImVec2(1, 0)
+    GRID_Renderer::render();
+	GRID_UI::image(
+		(void*)GRID_Renderer::getGuiTexture(),  
+		GRID_Vec2f(viewportPanelSize.x, viewportPanelSize.y), 
+		GRID_Vec2f(0, 1), 
+		GRID_Vec2f(1, 0)
 	);
-	ImGui::End();
 
-    ImGui::PopStyleVar(3);
+	GRID_UI::end();
 }

@@ -1,14 +1,14 @@
 #pragma once
-#include <imgui.h>
-#include <GRID/widget.h>
+#include <GRID/GRID_widget.h>
+#include <GRID/GRID_math.h>
 
-class Viewport : public Widget {
+class Viewport : public GRID_Widget {
 public:
     Viewport();
     ~Viewport();
     void render();
 
 private:
-    ImVec2 viewportPanelSize = ImVec2(1.0f, 1.0f);
-    ImVec2 previousMousePos = ImVec2(0.0f, 0.0f);
+    GRID_Vec2f viewportPanelSize = GRID_Vec2f(1.0f, 1.0f);
+    GRID_Vec2f previousMousePos = GRID_Vec2f(0.0f, 0.0f);
 };
