@@ -10,7 +10,7 @@ Viewport::~Viewport() {
 }
 
 void Viewport::render() {
-    GRID_UI::begin("Viewport");
+    GRID_UI::begin("Viewport", false);
 
     if (GRID_UI::isWindowHovered()) {
         if (GRID_Input::isMouseButtonDown(GRID_Input::MOUSE_BUTTON_LEFT)) {

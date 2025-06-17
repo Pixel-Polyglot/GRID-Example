@@ -10,7 +10,8 @@ GPU::GPU(){
 GPU::~GPU(){
 }
 
-void GPU::init(int resX, int resY){
+void GPU::init(int resX, int resY) {
+
     image_width = resX;
     image_height = resY;
 
