@@ -1,8 +1,8 @@
 #include <pipelines/pipeline.h>
-#include <GRID/GRID_renderer.h>
 #include <GRID/GRID_window.h>
 #include <gpu/gpu.h>
 #include <GRID/GRID_textures.h>
+#include <ui/viewport.h>
 
 Pipeline pipeline = Pipeline();
 
@@ -12,43 +12,44 @@ Pipeline::Pipeline() {
 Pipeline::~Pipeline() {
 }
 
-const int GPURESX = 160;
-const int GPURESY = 160;
+const GRID_Vec2i GPURES = GRID_Vec2i(160, 160); 
 
 void Pipeline::init(int argc, char* argv[]) {
-    GRID_Renderer::setResolution(GPURESX, GPURESY);
-    GRID_Textures::createTexture("gpuOutput", GPURESX, GPURESY, GRID_TEXTUREFORMAT::RGBA8UI, 0);
+    renderer = new GRID_Renderer();
+    renderer->init("renderTexture");
+    renderer->setResolution(GPURES);
+    GRID_Textures::createTexture("gpuOutput", GPURES, GRID_TEXTUREFORMAT::RGBA8UI, 0);
 
-    gpuRender.setComputeShader("../shaders/rendergpu.cs");
+    gpuRender.setComputeShaderFile("shaders/rendergpu.cs");
     gpuRender.compile();
 
-    char image[GPURESX*GPURESY*4];
-    for(int i = 0; i < GPURESX*GPURESY*4; i++) image[i] = 255;
-    GRID_Textures::writeTexture("gpuOutput", GPURESX, GPURESY, GRID_TEXTUREFORMAT::RGBA8UI, (int*)image);
+    char image[GPURES.x*GPURES.y*4];
+    for(int i = 0; i < GPURES.x*GPURES.y*4; i++) image[i] = 255;
+    GRID_Textures::writeTexture("gpuOutput", GPURES, GRID_TEXTUREFORMAT::RGBA8UI, (int*)image);
 
     gpu = new GPU();
-    gpu->init(GPURESX, GPURESY);
+    gpu->init(GPURES);
 }
 
 void Pipeline::run() {
     GRID_Window::enableVsync(vsync);
     
     unsigned char* image = gpu->run();
-    GRID_Textures::writeTexture("gpuOutput", GPURESX, GPURESY, GRID_TEXTUREFORMAT::RGBA8UI, (int*)image);
+    GRID_Textures::writeTexture("gpuOutput", GPURES, GRID_TEXTUREFORMAT::RGBA8UI, (int*)image);
 
-    unsigned int width, height;
-    GRID_Renderer::getResolution(width, height);
+    GRID_Vec2i texRes = renderer->getResolution();
 
     gpuRender.use();
     gpuRender.setImage("gpuOutput", "gpuOutput", GRID_TEXTUREFORMAT::RGBA8UI);
-    gpuRender.setImage("renderTexture", "renderTexture", GRID_TEXTUREFORMAT::RGBA32F);
-    gpuRender.compute(width / 16, height / 16, 1);
+    gpuRender.setImage("renderTexture", renderer->getTextureName(), GRID_TEXTUREFORMAT::RGBA32F);
+    gpuRender.compute(texRes.x / 16, texRes.y / 16, 1);
 
     if (saveImage) {
-        GRID_Textures::saveTextureToFile("gpuOutput", fileName, width, height, GRID_TEXTUREFORMAT::RGBA8UI, 0, 0);
+        GRID_Textures::saveTextureToFile("gpuOutput", fileName, texRes, GRID_TEXTUREFORMAT::RGBA8UI);
         saveImage = false;
     }
 }
 
 void Pipeline::destroy() {
+    renderer->destroy();
 }

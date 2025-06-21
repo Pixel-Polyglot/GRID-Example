@@ -19,14 +19,13 @@ class GPU
 public:
     GPU();
     ~GPU();
-    void init(int resX, int resY);
+    void init(GRID_Vec2i res);
     unsigned char* run();
 
 private:
     int edgecross(GRID_Vec2f p, GRID_Vec2f a, GRID_Vec2f b);
 
-    int image_width;
-    int image_height;
-    unsigned char* framebuffer;
-    std::vector<triangle> triangles;
+    GRID_Vec2i m_imageSize;
+    unsigned char* m_framebuffer;
+    std::vector<triangle> m_triangles;
 };

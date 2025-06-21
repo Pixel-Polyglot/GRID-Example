@@ -2,6 +2,7 @@
 #include <GRID/GRID_renderer.h>
 #include <GRID/GRID_ui.h>
 #include <GRID/GRID_input.h>
+#include <pipelines/pipeline.h>
 
 Viewport::Viewport() {
 }
@@ -15,25 +16,24 @@ void Viewport::render() {
     if (GRID_UI::isWindowHovered()) {
         if (GRID_Input::isMouseButtonDown(GRID_Input::MOUSE_BUTTON_LEFT)) {
             GRID_Vec2f mousePos = GRID_Input::getMousePos();
-            GRID_Renderer::getCamera()->translate(mousePos.x - previousMousePos.x, mousePos.y - previousMousePos.y);
+            pipeline.renderer->getCamera()->translate(mousePos - previousMousePos);
         }
         if (GRID_Input::getMouseWheel() != 0.0f) {
-			float scaleX, scaleY;
-            GRID_Renderer::getCamera()->getScale(scaleX, scaleY);
-            float scrollAmount = GRID_Input::getMouseWheel() * (scaleX * 0.1f);
-            GRID_Renderer::getCamera()->setScale(scaleX + scrollAmount, scaleY + scrollAmount);
+            GRID_Vec2f scale = pipeline.renderer->getCamera()->getScale();
+            float scrollAmount = GRID_Input::getMouseWheel() * (scale.x * 0.1f);
+            pipeline.renderer->getCamera()->setScale(scale + scrollAmount);
         }
     }
 	previousMousePos = GRID_Input::getMousePos();
 
 	GRID_Vec2f newViewportPanelSize = GRID_UI::getContentRegionAvail();
     if (newViewportPanelSize.x != viewportPanelSize.x || newViewportPanelSize.y != viewportPanelSize.y) {
-        GRID_Renderer::resize(int(viewportPanelSize.x), int(viewportPanelSize.y), int(newViewportPanelSize.x), int(newViewportPanelSize.y));
+        pipeline.renderer->resize(GRID_Vec2i(viewportPanelSize.x, viewportPanelSize.y), GRID_Vec2i(newViewportPanelSize.x, newViewportPanelSize.y));
     }
     viewportPanelSize = newViewportPanelSize;
-    GRID_Renderer::render();
+    pipeline.renderer->render();
 	GRID_UI::image(
-		(void*)GRID_Renderer::getGuiTexture(),  
+		(void*)pipeline.renderer->getGuiTexture(),  
 		GRID_Vec2f(viewportPanelSize.x, viewportPanelSize.y), 
 		GRID_Vec2f(0, 1), 
 		GRID_Vec2f(1, 0)

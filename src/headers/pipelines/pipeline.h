@@ -1,7 +1,8 @@
 #pragma once
 
-#include <GRID/GRID_shaderProgram.h>
 #include <gpu/gpu.h>
+#include <GRID/GRID_renderer.h>
+#include <GRID/GRID_shaderProgram.h>
 
 class Pipeline {
 public:
@@ -18,6 +19,8 @@ public:
 
     float fpsplotdelta = 0.0f;
     float fpsplotdata[600];
+
+    GRID_Renderer* renderer;
 
 private:
     GRID_ComputeProgram gpuRender;

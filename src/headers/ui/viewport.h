@@ -1,6 +1,7 @@
 #pragma once
 #include <GRID/GRID_widget.h>
 #include <GRID/GRID_math.h>
+#include <GRID/GRID_renderer.h>
 
 class Viewport : public GRID_Widget {
 public:

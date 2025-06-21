@@ -10,29 +10,28 @@ GPU::GPU(){
 GPU::~GPU(){
 }
 
-void GPU::init(int resX, int resY) {
+void GPU::init(GRID_Vec2i res) {
 
-    image_width = resX;
-    image_height = resY;
+    m_imageSize = res;
 
-    framebuffer = new unsigned char[resX * resY * 4]{0};
+    m_framebuffer = new unsigned char[m_imageSize.x * m_imageSize.y * 4]{0};
 
-    triangles.push_back(triangle{vertex{GRID_Vec2f(40, 40), GRID_Vec3f(255, 0, 0)}, vertex{GRID_Vec2f(80, 40), GRID_Vec3f(0, 255, 0)}, vertex{GRID_Vec2f(40, 80), GRID_Vec3f(0, 0, 255)}});
-    triangles.push_back(triangle{vertex{GRID_Vec2f(40, 80), GRID_Vec3f(255, 0, 0)}, vertex{GRID_Vec2f(80, 40), GRID_Vec3f(0, 255, 0)}, vertex{GRID_Vec2f(90, 90), GRID_Vec3f(0, 0, 255)}});
-    triangles.push_back(triangle{vertex{GRID_Vec2f(40, 40), GRID_Vec3f(255, 0, 0)}, vertex{GRID_Vec2f(75, 20), GRID_Vec3f(0, 255, 0)}, vertex{GRID_Vec2f(80, 40), GRID_Vec3f(0, 0, 255)}});
+    m_triangles.push_back(triangle{vertex{GRID_Vec2f(40, 40), GRID_Vec3f(255, 0, 0)}, vertex{GRID_Vec2f(80, 40), GRID_Vec3f(0, 255, 0)}, vertex{GRID_Vec2f(40, 80), GRID_Vec3f(0, 0, 255)}});
+    m_triangles.push_back(triangle{vertex{GRID_Vec2f(40, 80), GRID_Vec3f(255, 0, 0)}, vertex{GRID_Vec2f(80, 40), GRID_Vec3f(0, 255, 0)}, vertex{GRID_Vec2f(90, 90), GRID_Vec3f(0, 0, 255)}});
+    m_triangles.push_back(triangle{vertex{GRID_Vec2f(40, 40), GRID_Vec3f(255, 0, 0)}, vertex{GRID_Vec2f(75, 20), GRID_Vec3f(0, 255, 0)}, vertex{GRID_Vec2f(80, 40), GRID_Vec3f(0, 0, 255)}});
 }
 
 unsigned char* GPU::run(){
-    std::memset(framebuffer, 0, image_width * image_height * 4);
+    std::memset(m_framebuffer, 0, m_imageSize.x * m_imageSize.y * 4);
 
     std::vector<std::vector<std::vector<unsigned char>>> image;
 
-    for (auto triangle : triangles) {
+    for (auto triangle : m_triangles) {
         // triangle bounding box
         int min_x = std::max(float(0),              std::min(std::min(triangle.a.position.x, triangle.b.position.x), triangle.c.position.x));
-        int max_x = std::min(float(image_width),    std::max(std::max(triangle.a.position.x, triangle.b.position.x), triangle.c.position.x));
+        int max_x = std::min(float(m_imageSize.x),    std::max(std::max(triangle.a.position.x, triangle.b.position.x), triangle.c.position.x));
         int min_y = std::max(float(0),              std::min(std::min(triangle.a.position.y, triangle.b.position.y), triangle.c.position.y));
-        int max_y = std::min(float(image_height),   std::max(std::max(triangle.a.position.y, triangle.b.position.y), triangle.c.position.y));
+        int max_y = std::min(float(m_imageSize.y),   std::max(std::max(triangle.a.position.y, triangle.b.position.y), triangle.c.position.y));
         
         // triangle edges
         GRID_Vec2f e1 = triangle.b.position - triangle.a.position;
@@ -65,17 +64,17 @@ unsigned char* GPU::run(){
                         float gamma = w1 * inv_area;
 
                         // interpolate vertex colors
-                        framebuffer[image_width*4*j+i*4+0] = triangle.a.color.x * alpha + triangle.b.color.x * beta + triangle.c.color.x * gamma;
-                        framebuffer[image_width*4*j+i*4+1] = triangle.a.color.y * alpha + triangle.b.color.y * beta + triangle.c.color.y * gamma;
-                        framebuffer[image_width*4*j+i*4+2] = triangle.a.color.z * alpha + triangle.b.color.z * beta + triangle.c.color.z * gamma;
-                        framebuffer[image_width*4*j+i*4+3] = 255;
+                        m_framebuffer[m_imageSize.x*4*j+i*4+0] = triangle.a.color.x * alpha + triangle.b.color.x * beta + triangle.c.color.x * gamma;
+                        m_framebuffer[m_imageSize.x*4*j+i*4+1] = triangle.a.color.y * alpha + triangle.b.color.y * beta + triangle.c.color.y * gamma;
+                        m_framebuffer[m_imageSize.x*4*j+i*4+2] = triangle.a.color.z * alpha + triangle.b.color.z * beta + triangle.c.color.z * gamma;
+                        m_framebuffer[m_imageSize.x*4*j+i*4+3] = 255;
                     }
                 }
             }
         }
     }
 
-    return framebuffer;
+    return m_framebuffer;
 }
 
 int GPU::edgecross(GRID_Vec2f p, GRID_Vec2f a, GRID_Vec2f b) {
