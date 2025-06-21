@@ -2,7 +2,8 @@
 #include <GRID/GRID_window.h>
 #include <gpu/gpu.h>
 #include <GRID/GRID_textures.h>
-#include <ui/viewport.h>
+#include <GRID/GRID_settings.h>
+#include <iostream>
 
 Pipeline pipeline = Pipeline();
 
@@ -20,7 +21,7 @@ void Pipeline::init(int argc, char* argv[]) {
     renderer->setResolution(GPURES);
     GRID_Textures::createTexture("gpuOutput", GPURES, GRID_TEXTUREFORMAT::RGBA8UI, 0);
 
-    gpuRender.setComputeShaderFile("shaders/rendergpu.cs");
+    gpuRender.setComputeShaderFile((GRID_Settings::getRelativePath() + '/' + GRID_Settings::getUserSettingAsString("shaderPath") + "/rendergpu.cs").c_str());
     gpuRender.compile();
 
     char image[GPURES.x*GPURES.y*4];
