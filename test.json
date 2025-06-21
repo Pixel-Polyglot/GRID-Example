@@ -1,0 +1,11 @@
+{
+    "name": "Test Project",
+    "applicationLib": "../GRID-Example/build/libGRID-Example.so",
+    "GRIDCoreLib": "../GRID-Core/build/libGRID-Core.so",
+    "guiConfig": "ImGui.ini",
+    
+    "userSettings":
+    {
+        "shaderPath": "shaders"
+    }
+}
