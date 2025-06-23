@@ -1,7 +1,7 @@
 {
     "name": "Test Project",
-    "applicationLib": "../GRID-Example/build/libGRID-Example.so",
-    "GRIDCoreLib": "../GRID-Core/build/libGRID-Core.so",
+    "applicationLib": "../GRID-Example/out/build/x64-Debug/GRID-Example.dll",
+    "GRIDCoreLib": "../GRID-Core/out/build/x64-Debug/GRID-Core.dll",
     "guiConfig": "ImGui.ini",
     
     "userSettings":

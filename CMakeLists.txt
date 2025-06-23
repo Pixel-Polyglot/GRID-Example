@@ -25,7 +25,7 @@ endif()
 add_compile_options(-fvisibility=hidden)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-add_definitions(-DEXPORT_SHARED)
+# add_definitions(-DEXPORT_SHARED)
 # set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 link_directories(deps/libs/GRID)
@@ -34,4 +34,4 @@ file(GLOB_RECURSE SOURCES src/*.cpp)
 
 add_library(GRID-Example SHARED ${SOURCES})
 
-target_link_libraries(GRID-Example GRID-Core -static-libgcc -static-libstdc++)
+target_link_libraries(GRID-Example GRID-Core)

@@ -2,6 +2,7 @@
 #include <pipelines/pipeline.h>
 #include <GRID/GRID_window.h>
 #include <GRID/GRID_ui.h>
+#include <format>
 
 Sidebar::Sidebar() {
 }
@@ -12,7 +13,11 @@ Sidebar::~Sidebar() {
 void Sidebar::render() {
     GRID_UI::begin("Menu");
 
-    GRID_UI::text("%.3f ms/frame (%.1f FPS)", GRID_Window::getDeltaTime() * 1000, 1.0f / GRID_Window::getDeltaTime());
+    double deltaTime = GRID_Window::getDeltaTime();float msPerFrame = deltaTime * 1000.0f;
+    float fps = 1.0f / deltaTime;
+    std::string fpsCounter = std::format("{:.2f} ms/frame ({:.2f} FPS)", msPerFrame, fps);
+
+    GRID_UI::text(fpsCounter);
 
     // pipeline.fpsplotdelta += ImGui::GetIO().DeltaTime;
     // if (pipeline.fpsplotdelta > 60.0) {

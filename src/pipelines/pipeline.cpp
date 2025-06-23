@@ -20,13 +20,13 @@ void Pipeline::init(int argc, char* argv[]) {
     renderer->init("renderTexture");
     renderer->setResolution(GPURES);
     GRID_Textures::createTexture("gpuOutput", GPURES, GRID_TEXTUREFORMAT::RGBA8UI, 0);
-
     gpuRender.setComputeShaderFile((GRID_Settings::getRelativePath() + '/' + GRID_Settings::getUserSettingAsString("shaderPath") + "/rendergpu.cs").c_str());
     gpuRender.compile();
 
-    char image[GPURES.x*GPURES.y*4];
+    char* image = new char[GPURES.x*GPURES.y*4];
     for(int i = 0; i < GPURES.x*GPURES.y*4; i++) image[i] = 255;
     GRID_Textures::writeTexture("gpuOutput", GPURES, GRID_TEXTUREFORMAT::RGBA8UI, (int*)image);
+    delete[] image;
 
     gpu = new GPU();
     gpu->init(GPURES);
